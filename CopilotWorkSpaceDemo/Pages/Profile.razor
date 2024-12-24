@@ -1,0 +1,39 @@
+@page "/profile"
+
+@using System.ComponentModel.DataAnnotations
+@inject UserProfileService UserProfileService
+
+<EditForm Model="@userProfile" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label for="username">ユーザー名:</label>
+        <InputText id="username" @bind-Value="userProfile.Username" />
+        <ValidationMessage For="@(() => userProfile.Username)" />
+    </div>
+
+    <div>
+        <label for="email">メールアドレス:</label>
+        <InputText id="email" @bind-Value="userProfile.Email" />
+        <ValidationMessage For="@(() => userProfile.Email)" />
+    </div>
+
+    <button type="submit">送信</button>
+</EditForm>
+
+@code {
+    private UserProfile userProfile = new UserProfile();
+
+    private async Task HandleValidSubmit()
+    {
+        var result = await UserProfileService.AddUserProfileAsync(userProfile);
+        if (!result.Success)
+        {
+            foreach (var error in result.Errors)
+            {
+                // Display error messages
+            }
+        }
+    }
+}
